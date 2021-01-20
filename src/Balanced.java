@@ -3,16 +3,21 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Balanced {
+
+    public static Stack s;
     public static void main(String[] args) throws FileNotFoundException {
         // Import the input file and read it into memory
-        File f = new File("in.txt");
-        Scanner sc = new Scanner(f);
+        Scanner sc = new Scanner(new File("C:\\Users\\lol2f\\Desktop\\CodeProjects\\DataStructures\\BalancedExpressions\\in.txt"));
+        // Scanner is acting odd and won't allow me to do relative paths, might be because I moved the project
 
         // Initialize a counting variable
         int numBalance = 0;
 
         // Skip the first line of the text file
         sc.nextLine();
+
+        // Commented variable for debugging
+//        int count = 2;
 
         // Read the input lines
         while(sc.hasNextLine()){
@@ -21,52 +26,67 @@ public class Balanced {
             String line = sc.nextLine();
 
             // Initialize a new stack
-            Stack s = new Stack();
+            s = new Stack();
+
+            // Initial/reset a variable that keeps track of if the expression is balanced
+            boolean balanced = true;
 
             // Look through each character in the input line
             for(int i = 0; i < line.length(); i++){
+
                 // If character is a starting delimiter, add it to the stack
                 if(line.charAt(i) == '{' || line.charAt(i) == '(' || line.charAt(i) == '['){
                     s.push(line.charAt(i));
                 }
 
-                // If this ending delimiter is found
-                if(line.charAt(i) == '}'){
-                    // and the stack has the starting delimiter on top, pop the stack
-                    if(s.peek() != null && (char)s.peek() == '{'){
-                        s.pop();
-                    }else{ // else the expression is imbalanced
-                        break;
-                    }
-                }
+                // Run checks to see if expressions are balanced
+                balanced = isBalanced('[', ']', line, i) // Checks if ] is the current char and if [ is on top of the stack
+                        && isBalanced('{', '}', line, i) // Checks if { and } are balanced
+                        && isBalanced('(', ')', line, i); // Checks if ( and ) are balanced
 
-                if(line.charAt(i) == ']'){
-                    if(s.peek() != null && (char)s.peek() == '['){
-                        s.pop();
-                    }else{
-                        break;
-                    }
+                // Break out of the loop if it isn't balanced
+                if(!balanced){
+                    break;
                 }
-
-                if(line.charAt(i) == ')'){
-                    if(s.peek() != null && (char)s.peek() == '('){
-                        s.pop();
-                    }else{
-                        break;
-                    }
-                }
-
             }
 
-            // If the stack is empty, the expression should be balanced
-            if(s.empty()){
-                // System.out.println(count);
+            // Checks if the expressions are balanced and if the stack is empty
+            balanced = balanced && s.empty();
+
+            // If balanced is true, the expression should be balanced
+            if(balanced){
+//                System.out.println(count);
                 numBalance++;
             }
 
+//            count++;
         }
 
         // Prints out the number of balanced expressions
         System.out.println(numBalance);
+    }
+
+    /**
+     * Checks if the character at top of the stack balances with the character at i
+     * If it does, pop() the stack
+     * @param start starting delimiter character
+     * @param end ending delimiter character
+     * @param line the line being evaluated
+     * @param i the iteration from the loop
+     * @return If stack is popped or end delimiter is not found before start, return true. Otherwise false
+     */
+    public static boolean isBalanced(char start, char end, String line, int i){
+        // Unfortunately, this is too long to turn into an inline if statement
+        if(line.charAt(i) == end){
+            if(s.peek() == null){
+                return false;
+            }
+            if((char)s.peek() == start){
+                s.pop();
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
 }
