@@ -16,7 +16,7 @@ public class Balanced {
         // Skip the first line of the text file
         sc.nextLine();
 
-        // Commented variable for debugging
+        // Variable for debugging (tells you which line is evaluated as balanced)
 //        int count = 2;
 
         // Read the input lines
@@ -76,17 +76,26 @@ public class Balanced {
      * @return If stack is popped or end delimiter is not found before start, return true. Otherwise false
      */
     public static boolean isBalanced(char start, char end, String line, int i){
-        // Unfortunately, this is too long to turn into an inline if statement
+        // Unfortunately, this is too long to effectively turn into an inline if statement
+
+        // Checks if the current character is an end delimiter
         if(line.charAt(i) == end){
+
+            // If the stack is empty, return false
             if(s.peek() == null){
                 return false;
             }
+
+            // If the character at the top of the stack is the start delimiter, pop() and return true
             if((char)s.peek() == start){
                 s.pop();
                 return true;
             }
+            // Else return false
             return false;
         }
+
+        // Else return true
         return true;
     }
 }
